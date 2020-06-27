@@ -1,48 +1,18 @@
-var http = require('http');
- var fs = require('fs');
- var path = require('path');
+const NodeMediaServer = require("node-media-server");
 
- http.createServer(function (request, response) {
+const config = {
+  rtmp: {
+    port: process.env.PORT || 1935,
+    chunk_size: 60000,
+    gop_cache: true,
+    ping: 30,
+    ping_timeout: 60,
+  },
+  http: {
+    port: 8000,
+    allow_origin: "*",
+  },
+};
 
-    console.log('request starting for ');
-    console.log(request);
-
-    var filePath = '.' + request.url;
-    if (filePath == './')
-        filePath = './index.html';
-
-    console.log(filePath);
-    var extname = path.extname(filePath);
-    var contentType = 'text/html';
-    switch (extname) {
-        case '.js':
-            contentType = 'text/javascript';
-            break;
-        case '.css':
-            contentType = 'text/css';
-            break;
-    }
-
-    path.exists(filePath, function(exists) {
-
-        if (exists) {
-            fs.readFile(filePath, function(error, content) {
-                if (error) {
-                    response.writeHead(500);
-                    response.end();
-                }
-                else {
-                    response.writeHead(200, { 'Content-Type': contentType });
-                    response.end(content, 'utf-8');
-                }
-            });
-        }
-        else {
-            response.writeHead(404);
-            response.end();
-        }
-    });
-
- }).listen(process.env.PORT || 5000);
-
- console.log('Server running at http://127.0.0.1:5000/');
+var nms = new NodeMediaServer(config);
+nms.run();
