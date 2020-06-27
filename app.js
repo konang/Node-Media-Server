@@ -4,14 +4,14 @@ const HTTP_PORT = process.env.HTTP_PORT || 8000;
 
 const config = {
   rtmp: {
-    port: process.env.PORT || 1935,
+    port: 1935,
     chunk_size: 60000,
     gop_cache: true,
     ping: 30,
     ping_timeout: 60,
   },
   http: {
-    port: HTTP_PORT,
+    port: process.env.PORT || 8000,
     allow_origin: "*",
   },
 };
